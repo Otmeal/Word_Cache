@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Word Cache</title>
+{% endblock %}
+
+{% block body %}
+<header>
+    <h2>Word Cache</h2>
+</header>
+<main>
+    <aside id="main_left_space"></aside>
+    <section class="main-section">
+        <button id="button-0" class="hiden"><span>Show</span> Dialoglog</button>
+        <p id="log-0" class="hiden Peixes"> MEENAH: (dream on blue nerd)<br>
+            MEENAH: (you in my crosshairs sucka)<br>
+            MEENAH: (gotch u right where i want)<br>
+            MEENAH: (just biding my time)<br>
+            MEENAH: (biding and biding)<br>
+            MEENAH: (gonna hunt you til we both double dead)<br>
+            MEENAH: (you are my obsession lil bluefish)<br>
+            MEENAH: (my shrimpiest of whales)<br>
+            MEENAH: (my mobiest of dicks)<br>
+            MEENAH: (fishmael)<br>
+            MEENAH: 3B|</p>
+        <div class="intro hiden" id="intro">
+            這是一個能暫存英文單詞詞意的網站，來源為Cambridge Dictionary。<br>
+            你能一次輸入多個詞。<br>
+            點擊單詞可以將該詞詞義展開/收起，點擊詞義會自動複製。<br>
+            Ctrl+F可以在網頁內查詢已存在的詞（避免你在這查了太多單詞）。<br>
+            在查詢片語時，出現的會是裡面其中一個詞的詞意，代表那屬於該詞的用法。<br>
+            用"-"來連接片語內的詞。<br>
+            <span>
+                按鈕：
+            </span><br>
+            <span>
+                Del All- 刪除全部的單詞
+            </span><br>
+            <span>
+                Send(Enter)- 送出要查尋的單詞
+            </span><br>
+            <span>
+                Show/Hide- 展開/收起全部
+            </span><br>
+            <span>
+                注意!- 若查尋單詞後沒有反應，可能是劍橋字典沒有收錄該詞或是拼字有誤。
+            </span><br>
+        </div>
+        <div class="word_blocks">
+            {% for word in words %}
+            <div class="word_block" id="{{word.name}}-word_block">
+                <span class="word_name" id="{{word.name}}-word_name">{{ word.name.replace("-", " ") }}</span>
+                <span class="delete_button" id="{{word.name}}-delete_button">Delete</span><br>
+                <div class="divider"></div>
+                <div class="pos-s" id="{{word.name}}-pos-s">
+                    {% for pos in word.parts_of_speech %}
+                    <div class="pos_block">
+                        <div class="pos_form">{{ pos.form }}</div>
+                        {% if pos.pos %}
+                        <div class="pos">
+                            <span class="pos_pos">{{ pos.pos }}</span>
+                            {% if pos.counting %}
+                            <span class="pos_counting">{{ pos.counting }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="prons">
+                            {% for prons in pos.prons_set %}
+                            {% if prons.uk_pron %}
+                            <span class="pron_region">UK</span>
+                            <span class="pron"> {{ prons.uk_pron }} </span>
+                            {% endif %}
+                            {% if prons.us_pron %}
+                            <span class="pron_region">US</span>
+                            <span class="pron"> {{ prons.us_pron }} </span>
+                            {% if prons.uk_pron or prons.us_pron %}
+                            <br>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="sub_divider"></div>
+
+                        {% for definition_set in pos.definition_sets %}
+                        <div class="def_set">
+                            {% if definition_set.sense %}
+                            <div class="sense">{{ definition_set.sense }}</div>
+                            {% endif %}
+                            {% for definition_unit in definition_set.definition_units %}
+                            <div class="def_unit">
+                                {% if definition_unit.phrase_title %}
+                                <div class="phrase_title_block">
+                                    {% if definition_unit.phrase_title %}
+                                    <span class="phrase_title">{{ definition_unit.phrase_title }}</span>
+                                    {% endif %}
+                                    {% if definition_unit.label %}
+                                    <span class="phrase_label">{{ definition_unit.label }}</span>
+                                    {% endif %}
+                                    {% if definition_unit.counting %}
+                                    <span class="sub_counting">{{ definition_unit.counting }}</span>
+                                    {% endif %}
+                                    {% if definition_unit.variant_name %}
+                                    <span class="variant_name">{{ definition_unit.variant_name }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="phrase_divider"></div>
+                                {% endif %}
+                                <div class="en_def word_def">{{ definition_unit.english_definition }}</div>
+                                {% if definition_unit.chinese_definition %}
+                                <div class="cn_def word_def">{{ definition_unit.chinese_definition }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <form id="words_request">
+            <textarea id="words_request_text" placeholder="Enter your words here..." rows=10></textarea>
+        </form>
+    </section>
+    <aside id="main_right_space`">
+        <div id="side_buttons">
+            <div id="intro_button" class="side_button"><span>Intro</span></div>
+            <div class="sticky">
+                <div id="delete_all_button" class="side_button"><span>Del<br>All</span></div>
+                <div id="send_words_button" class="side_button"><span>Send</span></div>
+                <div id="show_hide_all_button" class="side_button"><span>Show/<br>Hide</span></div>
+            </div>
+        </div>
+    </aside>
+</main>
+{% endblock %}
